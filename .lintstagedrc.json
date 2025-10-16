@@ -1,0 +1,21 @@
+{
+  "*.{js,jsx,ts,tsx}": [
+    "biome check --write",
+    "biome format --write"
+  ],
+  "*.{json,md,yml,yaml}": [
+    "biome format --write"
+  ],
+  "apps/frontend/**/*.{ts,tsx}": [
+    "biome check --write",
+    "biome format --write"
+  ],
+  "apps/backend/functions/**/*.{ts,js}": [
+    "biome check --write",
+    "biome format --write"
+  ],
+  "packages/shared/**/*.{ts,js}": [
+    "biome check --write",
+    "biome format --write"
+  ]
+}

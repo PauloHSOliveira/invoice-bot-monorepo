@@ -1,0 +1,64 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "apps/frontend/src/app/**/*.{js,ts,tsx}",
+    "apps/frontend/src/pages/**/*.{js,ts,tsx}",
+    "apps/backend/functions/src/**/*.{js,ts}",
+    "packages/shared/src/**/*.{js,ts}"
+  ],
+  "project": [
+    "apps/frontend/**/*.{js,ts,tsx,json}",
+    "apps/backend/**/*.{js,ts,json}",
+    "packages/shared/**/*.{js,ts,json}"
+  ],
+  "ignore": [
+    "apps/frontend/.next/**",
+    "apps/frontend/out/**",
+    "apps/backend/functions/lib/**",
+    "apps/backend/functions/node_modules/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**"
+  ],
+  "ignoreDependencies": [
+    "@types/node",
+    "@types/react",
+    "@types/react-dom",
+    "typescript",
+    "eslint",
+    "prettier"
+  ],
+  "workspaces": {
+    ".": {
+      "entry": [
+        "turbo.json",
+        "pnpm-workspace.yaml"
+      ]
+    },
+    "apps/frontend": {
+      "entry": [
+        "next.config.ts",
+        "postcss.config.mjs",
+        "tailwind.config.js"
+      ]
+    },
+    "apps/backend": {
+      "entry": [
+        "firebase.json",
+        "firestore.rules",
+        "firestore.indexes.json",
+        "storage.rules"
+      ]
+    },
+    "apps/backend/functions": {
+      "entry": [
+        "src/index.ts"
+      ]
+    },
+    "packages/shared": {
+      "entry": [
+        "src/index.ts"
+      ]
+    }
+  }
+}

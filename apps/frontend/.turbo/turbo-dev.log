@@ -1,0 +1,32 @@
+
+> frontend@0.1.0 dev /Users/paulooliveira/Documents/Projects/Personal/invoice-bot/apps/frontend
+> next dev --turbopack
+
+
+[31m✘[39m next.js v14.2.33 is [31mnot yet supported[39m in the Community edition of [33mConsole Ninja[39m.
+We are working hard on it for you [36mhttps://tinyurl.com/3h9mtwra[39m.
+
+Estimated release dates:
+  - Community users: [36maround 22nd November, 2025 [1m(subject to team availability)[22m[39m
+[33m  - PRO users[39m:       [1m[32mpriority access is available now[39m[22m
+
+
+[31m✘[39m next.js v14.2.33 is [31mnot yet supported[39m in the Community edition of [33mConsole Ninja[39m.
+We are working hard on it for you [36mhttps://tinyurl.com/3h9mtwra[39m.
+
+Estimated release dates:
+  - Community users: [36maround 22nd November, 2025 [1m(subject to team availability)[22m[39m
+[33m  - PRO users[39m:       [1m[32mpriority access is available now[39m[22m
+
+   [1m[38;2;173;127;168m▲ Next.js 15.5.5[39m[22m (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.115:3000
+
+ [32m[1m✓[22m[39m Starting...
+ [32m[1m✓[22m[39m Ready in 733ms
+ [37m[1m○[22m[39m Compiling / ...
+ [32m[1m✓[22m[39m Compiled / in 1528ms
+ GET / [32m200[39m in 1727ms
+ [32m[1m✓[22m[39m Compiled /favicon.ico in 164ms
+ GET /favicon.ico?favicon.0b3bf435.ico [32m200[39m in 413ms
+[?25h

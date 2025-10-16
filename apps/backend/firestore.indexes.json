@@ -1,0 +1,76 @@
+[
+  {
+    "collectionGroup": "invoices",
+    "queryScope": "COLLECTION",
+    "fields": [
+      {
+        "fieldPath": "userId",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "createdAt",
+        "order": "DESCENDING"
+      }
+    ]
+  },
+  {
+    "collectionGroup": "invoices",
+    "queryScope": "COLLECTION",
+    "fields": [
+      {
+        "fieldPath": "userId",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "status",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "createdAt",
+        "order": "DESCENDING"
+      }
+    ]
+  },
+  {
+    "collectionGroup": "clients",
+    "queryScope": "COLLECTION",
+    "fields": [
+      {
+        "fieldPath": "userId",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "name",
+        "order": "ASCENDING"
+      }
+    ]
+  },
+  {
+    "collectionGroup": "schedules",
+    "queryScope": "COLLECTION",
+    "fields": [
+      {
+        "fieldPath": "userId",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "nextRunDate",
+        "order": "ASCENDING"
+      }
+    ]
+  },
+  {
+    "collectionGroup": "webhook_messages",
+    "queryScope": "COLLECTION",
+    "fields": [
+      {
+        "fieldPath": "processed",
+        "order": "ASCENDING"
+      },
+      {
+        "fieldPath": "createdAt",
+        "order": "ASCENDING"
+      }
+    ]
+  }
+]
