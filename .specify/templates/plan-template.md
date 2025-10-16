@@ -1,105 +1,169 @@
-# Implementation Plan: [FEATURE]
+# Project Plan Template
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**Project:** [PROJECT_NAME]  
+**Version:** [PLAN_VERSION]  
+**Created:** [CREATION_DATE]  
+**Last Updated:** [LAST_UPDATED_DATE]
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+## Executive Summary
 
-## Summary
-
-[Extract from feature spec: primary requirement + technical approach from research]
-
-## Technical Context
-
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+[Brief overview of the project plan, objectives, and key deliverables]
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+This plan adheres to the following constitutional principles:
+- ✅ User-Centric Design: All features prioritize user experience
+- ✅ Scalable Architecture: Built using serverless technologies and FSD patterns
+- ✅ Security First: Proper authentication and data protection
+- ✅ MVP Focus: Stays within defined scope
+- ✅ Quality Assurance: Proper testing and coding standards
 
-[Gates determined based on constitution file]
+## Project Scope
 
-## Project Structure
+### In Scope
+- [List of features and deliverables included in this plan]
 
-### Documentation (this feature)
+### Out of Scope
+- [List of features explicitly excluded from this plan]
 
-```
-specs/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
-```
+## Technical Architecture
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+### Frontend
+- **Framework**: Next.js 15+ with App Router
+- **UI Components**: Shadcn UI + Tailwind CSS
+- **State Management**: [To be defined based on requirements]
 
-```
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+### Backend
+- **Runtime**: Firebase Cloud Functions
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Authentication
+- **Storage**: Firebase Storage
+- **Messaging**: Firebase Pub/Sub
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+### Integrations
+- **WhatsApp**: WhatsApp Business API (Twilio/360dialog)
+- **Email**: Email service provider (SendGrid/Resend)
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+## Development Phases
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+### Phase 1: Foundation Setup
+- [ ] Project structure setup
+- [ ] Development environment configuration
+- [ ] Basic authentication implementation
+- [ ] Database schema design
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
+### Phase 2: Core Features
+- [ ] WhatsApp message processing
+- [ ] PDF invoice generation
+- [ ] Web dashboard implementation
+- [ ] Client management
 
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
-```
+### Phase 3: Advanced Features
+- [ ] Recurring invoice scheduling
+- [ ] Template management
+- [ ] Logo upload functionality
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+### Phase 4: Testing & Deployment
+- [ ] Unit testing implementation
+- [ ] Integration testing
+- [ ] Performance testing
+- [ ] Production deployment
 
-## Complexity Tracking
+## Risk Assessment
 
-*Fill ONLY if Constitution Check has violations that must be justified*
+### Technical Risks
+- **Risk**: Firebase limitations
+  - **Mitigation**: Evaluate alternatives early
+  - **Impact**: Medium
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+- **Risk**: WhatsApp API rate limits
+  - **Mitigation**: Implement proper queuing
+  - **Impact**: High
 
+### Business Risks
+- **Risk**: User adoption challenges
+  - **Mitigation**: Focus on UX and user feedback
+  - **Impact**: High
+
+## Success Metrics
+
+- [ ] MVP launched within timeline
+- [ ] Core features operational
+- [ ] Positive user feedback
+- [ ] Scalability demonstrated
+- [ ] Code quality maintained
+
+## Resource Requirements
+
+### Development Team
+- [ ] Frontend Developer (Next.js/React)
+- [ ] Backend Developer (Firebase/Node.js)
+- [ ] DevOps Engineer (Firebase/Deployment)
+
+### Tools & Services
+- [ ] Firebase project setup
+- [ ] WhatsApp Business API account
+- [ ] Email service provider account
+- [ ] Development tools (IDE, testing frameworks)
+
+## Timeline
+
+| Phase | Duration | Start Date | End Date | Dependencies |
+|-------|----------|------------|----------|--------------|
+| Foundation Setup | 2 weeks | [DATE] | [DATE] | Project initiation |
+| Core Features | 6 weeks | [DATE] | [DATE] | Foundation complete |
+| Advanced Features | 4 weeks | [DATE] | [DATE] | Core features complete |
+| Testing & Deployment | 2 weeks | [DATE] | [DATE] | All features complete |
+
+## Dependencies
+
+### External Dependencies
+- [ ] WhatsApp Business API approval
+- [ ] Firebase project configuration
+- [ ] Domain and hosting setup
+
+### Internal Dependencies
+- [ ] Design system implementation
+- [ ] Authentication flow completion
+- [ ] Database schema finalization
+
+## Quality Assurance
+
+### Testing Strategy
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: API and service integration
+- **E2E Tests**: Complete user workflow testing
+- **Performance Tests**: Load and stress testing
+
+### Code Quality
+- **Linting**: ESLint + Biome configuration
+- **Type Checking**: TypeScript strict mode
+- **Code Review**: Mandatory peer review process
+- **Documentation**: Comprehensive code documentation
+
+## Monitoring & Maintenance
+
+### Performance Monitoring
+- [ ] Firebase Performance Monitoring
+- [ ] Error tracking and logging
+- [ ] User analytics implementation
+
+### Maintenance Plan
+- [ ] Regular security updates
+- [ ] Performance optimization
+- [ ] Feature enhancement roadmap
+- [ ] User feedback integration
+
+## Appendices
+
+### A. Technical Specifications
+[Detailed technical requirements and specifications]
+
+### B. User Stories
+[Detailed user stories and acceptance criteria]
+
+### C. API Documentation
+[API endpoints and data structures]
+
+### D. Database Schema
+[Detailed database design and relationships]
