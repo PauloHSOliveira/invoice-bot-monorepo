@@ -1,0 +1,1259 @@
+openapi: 3.0.3
+info:
+  title: InvoiceBot MVP API
+  description: API specification for InvoiceBot MVP - WhatsApp-based invoicing solution
+  version: 1.0.0
+  contact:
+    name: Paulo Oliveira
+    email: paulo@invoicebot.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.invoicebot.com/v1
+    description: Production server
+  - url: https://staging-api.invoicebot.com/v1
+    description: Staging server
+  - url: http://localhost:3000/api
+    description: Development server
+
+security:
+  - FirebaseAuth: []
+
+paths:
+  # Authentication endpoints
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user with email/password
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+        '400':
+          description: Bad request
+
+  /auth/logout:
+    post:
+      summary: User logout
+      description: Logout user and invalidate session
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Unauthorized
+
+  # User management endpoints
+  /users/profile:
+    get:
+      summary: Get user profile
+      description: Retrieve current user's profile information
+      tags: [Users]
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update user profile
+      description: Update current user's profile information
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '400':
+          description: Bad request
+
+  # Client management endpoints
+  /clients:
+    get:
+      summary: List clients
+      description: Retrieve all clients for the current user
+      tags: [Clients]
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: search
+          in: query
+          description: Search term for client name or email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Clients retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientListResponse'
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create client
+      description: Create a new client
+      tags: [Clients]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClientRequest'
+      responses:
+        '201':
+          description: Client created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /clients/{clientId}:
+    get:
+      summary: Get client
+      description: Retrieve a specific client by ID
+      tags: [Clients]
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Client not found
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update client
+      description: Update a specific client
+      tags: [Clients]
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClientRequest'
+      responses:
+        '200':
+          description: Client updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          description: Client not found
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Delete client
+      description: Delete a specific client
+      tags: [Clients]
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          description: Client ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Client deleted successfully
+        '404':
+          description: Client not found
+        '401':
+          description: Unauthorized
+
+  # Invoice management endpoints
+  /invoices:
+    get:
+      summary: List invoices
+      description: Retrieve all invoices for the current user
+      tags: [Invoices]
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: status
+          in: query
+          description: Filter by invoice status
+          schema:
+            type: string
+            enum: [draft, sent, paid, overdue, cancelled]
+        - name: clientId
+          in: query
+          description: Filter by client ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoices retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceListResponse'
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create invoice
+      description: Create a new invoice
+      tags: [Invoices]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInvoiceRequest'
+      responses:
+        '201':
+          description: Invoice created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /invoices/{invoiceId}:
+    get:
+      summary: Get invoice
+      description: Retrieve a specific invoice by ID
+      tags: [Invoices]
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: Invoice ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Invoice retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Invoice not found
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update invoice
+      description: Update a specific invoice
+      tags: [Invoices]
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: Invoice ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInvoiceRequest'
+      responses:
+        '200':
+          description: Invoice updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Invoice not found
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Delete invoice
+      description: Delete a specific invoice
+      tags: [Invoices]
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          description: Invoice ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Invoice deleted successfully
+        '404':
+          description: Invoice not found
+        '401':
+          description: Unauthorized
+
+  # Template management endpoints
+  /templates:
+    get:
+      summary: List templates
+      description: Retrieve all invoice templates for the current user
+      tags: [Templates]
+      responses:
+        '200':
+          description: Templates retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateListResponse'
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create template
+      description: Create a new invoice template
+      tags: [Templates]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTemplateRequest'
+      responses:
+        '201':
+          description: Template created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /templates/{templateId}:
+    get:
+      summary: Get template
+      description: Retrieve a specific template by ID
+      tags: [Templates]
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Template ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Template retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceTemplate'
+        '404':
+          description: Template not found
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update template
+      description: Update a specific template
+      tags: [Templates]
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Template ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTemplateRequest'
+      responses:
+        '200':
+          description: Template updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceTemplate'
+        '404':
+          description: Template not found
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Delete template
+      description: Delete a specific template
+      tags: [Templates]
+      parameters:
+        - name: templateId
+          in: path
+          required: true
+          description: Template ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Template deleted successfully
+        '404':
+          description: Template not found
+        '401':
+          description: Unauthorized
+
+  # Recurring schedule endpoints
+  /schedules:
+    get:
+      summary: List recurring schedules
+      description: Retrieve all recurring schedules for the current user
+      tags: [Schedules]
+      responses:
+        '200':
+          description: Schedules retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleListResponse'
+        '401':
+          description: Unauthorized
+
+    post:
+      summary: Create recurring schedule
+      description: Create a new recurring invoice schedule
+      tags: [Schedules]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateScheduleRequest'
+      responses:
+        '201':
+          description: Schedule created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringSchedule'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /schedules/{scheduleId}:
+    get:
+      summary: Get recurring schedule
+      description: Retrieve a specific recurring schedule by ID
+      tags: [Schedules]
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schedule retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringSchedule'
+        '404':
+          description: Schedule not found
+        '401':
+          description: Unauthorized
+
+    put:
+      summary: Update recurring schedule
+      description: Update a specific recurring schedule
+      tags: [Schedules]
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateScheduleRequest'
+      responses:
+        '200':
+          description: Schedule updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurringSchedule'
+        '404':
+          description: Schedule not found
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+    delete:
+      summary: Delete recurring schedule
+      description: Delete a specific recurring schedule
+      tags: [Schedules]
+      parameters:
+        - name: scheduleId
+          in: path
+          required: true
+          description: Schedule ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Schedule deleted successfully
+        '404':
+          description: Schedule not found
+        '401':
+          description: Unauthorized
+
+  # WhatsApp webhook endpoint
+  /webhooks/whatsapp:
+    post:
+      summary: WhatsApp webhook
+      description: Receive WhatsApp messages for invoice generation
+      tags: [Webhooks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WhatsAppWebhookRequest'
+      responses:
+        '200':
+          description: Webhook processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    FirebaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Firebase Authentication token
+
+  schemas:
+    # Authentication schemas
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          minLength: 6
+          description: User's password
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: Firebase authentication token
+        expiresIn:
+          type: integer
+          description: Token expiration time in seconds
+
+    # User schemas
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Firebase Auth UID
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        companyName:
+          type: string
+        logoUrl:
+          type: string
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        address:
+          $ref: '#/components/schemas/Address'
+        whatsappNumber:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        lastLoginAt:
+          type: string
+          format: date-time
+          nullable: true
+        isActive:
+          type: boolean
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        companyName:
+          type: string
+          minLength: 2
+          maxLength: 100
+        phoneNumber:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        whatsappNumber:
+          type: string
+
+    # Client schemas
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        address:
+          $ref: '#/components/schemas/Address'
+        taxId:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+
+    CreateClientRequest:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        taxId:
+          type: string
+        notes:
+          type: string
+          maxLength: 500
+
+    UpdateClientRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+        taxId:
+          type: string
+        notes:
+          type: string
+          maxLength: 500
+
+    ClientListResponse:
+      type: object
+      properties:
+        clients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    # Invoice schemas
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        clientId:
+          type: string
+        templateId:
+          type: string
+        invoiceNumber:
+          type: string
+        amount:
+          type: integer
+          description: Amount in cents
+        currency:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [draft, sent, paid, overdue, cancelled]
+        pdfUrl:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        sentAt:
+          type: string
+          format: date-time
+          nullable: true
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        recurringScheduleId:
+          type: string
+          nullable: true
+
+    CreateInvoiceRequest:
+      type: object
+      required:
+        - clientId
+        - templateId
+        - amount
+        - currency
+        - description
+        - dueDate
+      properties:
+        clientId:
+          type: string
+        templateId:
+          type: string
+        amount:
+          type: integer
+          minimum: 1
+          description: Amount in cents
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        dueDate:
+          type: string
+          format: date-time
+
+    UpdateInvoiceRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        dueDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [draft, sent, paid, overdue, cancelled]
+
+    InvoiceListResponse:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invoice'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    # Template schemas
+    InvoiceTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isDefault:
+          type: boolean
+        templateData:
+          $ref: '#/components/schemas/TemplateData'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isActive:
+          type: boolean
+
+    CreateTemplateRequest:
+      type: object
+      required:
+        - name
+        - templateData
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 200
+        isDefault:
+          type: boolean
+        templateData:
+          $ref: '#/components/schemas/TemplateData'
+
+    UpdateTemplateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+        description:
+          type: string
+          maxLength: 200
+        isDefault:
+          type: boolean
+        templateData:
+          $ref: '#/components/schemas/TemplateData'
+
+    TemplateListResponse:
+      type: object
+      properties:
+        templates:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceTemplate'
+
+    TemplateData:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/HeaderConfig'
+        invoiceDetails:
+          $ref: '#/components/schemas/InvoiceDetailsConfig'
+        items:
+          $ref: '#/components/schemas/ItemsConfig'
+        footer:
+          $ref: '#/components/schemas/FooterConfig'
+        styling:
+          $ref: '#/components/schemas/StylingConfig'
+
+    HeaderConfig:
+      type: object
+      properties:
+        showLogo:
+          type: boolean
+        logoPosition:
+          type: string
+          enum: [left, center, right]
+        companyInfo:
+          $ref: '#/components/schemas/CompanyInfoConfig'
+
+    CompanyInfoConfig:
+      type: object
+      properties:
+        showName:
+          type: boolean
+        showAddress:
+          type: boolean
+        showPhone:
+          type: boolean
+        showEmail:
+          type: boolean
+
+    InvoiceDetailsConfig:
+      type: object
+      properties:
+        showInvoiceNumber:
+          type: boolean
+        showDate:
+          type: boolean
+        showDueDate:
+          type: boolean
+        showTerms:
+          type: boolean
+
+    ItemsConfig:
+      type: object
+      properties:
+        showDescription:
+          type: boolean
+        showQuantity:
+          type: boolean
+        showRate:
+          type: boolean
+        showAmount:
+          type: boolean
+
+    FooterConfig:
+      type: object
+      properties:
+        showNotes:
+          type: boolean
+        showTerms:
+          type: boolean
+        customFooter:
+          type: string
+          nullable: true
+
+    StylingConfig:
+      type: object
+      properties:
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        fontFamily:
+          type: string
+        fontSize:
+          type: integer
+
+    # Recurring schedule schemas
+    RecurringSchedule:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        clientId:
+          type: string
+        templateId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        amount:
+          type: integer
+          description: Amount in cents
+        currency:
+          type: string
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+        interval:
+          type: integer
+          minimum: 1
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+          nullable: true
+        nextRunDate:
+          type: string
+          format: date-time
+        lastRunDate:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [active, paused, completed, cancelled]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateScheduleRequest:
+      type: object
+      required:
+        - clientId
+        - templateId
+        - name
+        - description
+        - amount
+        - currency
+        - frequency
+        - interval
+        - startDate
+      properties:
+        clientId:
+          type: string
+        templateId:
+          type: string
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+        description:
+          type: string
+          minLength: 10
+          maxLength: 500
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+        interval:
+          type: integer
+          minimum: 1
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+
+    UpdateScheduleRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 50
+        description:
+          type: string
+          minLength: 10
+          maxLength: 500
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          pattern: '^[A-Z]{3}$'
+        frequency:
+          type: string
+          enum: [daily, weekly, monthly, yearly]
+        interval:
+          type: integer
+          minimum: 1
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [active, paused, completed, cancelled]
+
+    ScheduleListResponse:
+      type: object
+      properties:
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecurringSchedule'
+
+    # Webhook schemas
+    WhatsAppWebhookRequest:
+      type: object
+      required:
+        - from
+        - message
+        - timestamp
+      properties:
+        from:
+          type: string
+          description: WhatsApp phone number
+        message:
+          type: string
+          description: Message content
+        timestamp:
+          type: string
+          format: date-time
+
+    WebhookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        invoiceId:
+          type: string
+          nullable: true
+
+    # Common schemas
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          nullable: true
