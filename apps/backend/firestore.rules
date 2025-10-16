@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can only access their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Clients belong to users and can be managed by the owner
+    match /users/{userId}/clients/{clientId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Invoice templates belong to users and can be managed by the owner
+    match /users/{userId}/templates/{templateId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Invoices belong to users and can be managed by the owner
+    match /users/{userId}/invoices/{invoiceId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Recurring schedules belong to users and can be managed by the owner
+    match /users/{userId}/schedules/{scheduleId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // System-wide collections (for WhatsApp webhook processing)
+    match /webhook_messages/{messageId} {
+      allow write: if request.auth == null; // Allow unauthenticated writes for webhooks
+      allow read: if request.auth != null; // Only authenticated users can read
+    }
+    
+    // Invoice generation queue (for Pub/Sub processing)
+    match /invoice_queue/{queueId} {
+      allow write: if request.auth == null; // Allow Cloud Functions to write
+      allow read: if request.auth == null; // Allow Cloud Functions to read
+    }
+  }
+}
