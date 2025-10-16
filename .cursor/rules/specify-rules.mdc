@@ -1,0 +1,131 @@
+# InvoiceBot MVP - Cursor IDE Context
+
+**Project:** InvoiceBot MVP  
+**Last updated:** 2025-01-15
+
+## Project Overview
+
+InvoiceBot MVP is a comprehensive invoicing solution that enables SMBs and freelancers to generate, manage, and deliver invoices through WhatsApp and a web dashboard. The system automates invoice creation, client management, and recurring billing while maintaining a focus on user experience and scalability.
+
+## Active Technologies
+
+- Next.js 15+ + Firebase (001-invoicebot-mvp-spec)
+- TypeScript + React (001-invoicebot-mvp-spec)
+- Firebase Firestore (001-invoicebot-mvp-spec)
+- Firebase Cloud Functions (001-invoicebot-mvp-spec)
+- Firebase Authentication (001-invoicebot-mvp-spec)
+- Firebase Storage (001-invoicebot-mvp-spec)
+- Shadcn UI + Tailwind CSS (001-invoicebot-mvp-spec)
+
+## Project Structure
+
+```
+invoice-bot/
+├── apps/
+│   ├── frontend/          # Next.js 15+ frontend
+│   │   ├── src/
+│   │   │   ├── app/       # App Router pages
+│   │   │   ├── components/ # React components
+│   │   │   ├── lib/       # Utilities and config
+│   │   │   └── types/     # TypeScript types
+│   │   └── public/        # Static assets
+│   └── backend/           # Firebase Cloud Functions
+│       ├── functions/
+│       │   ├── src/
+│       │   │   ├── webhooks/    # WhatsApp webhooks
+│       │   │   ├── invoices/    # Invoice processing
+│       │   │   ├── notifications/ # Email/WhatsApp sending
+│       │   │   └── shared/      # Shared utilities
+│       │   └── package.json
+│       └── firebase.json
+├── packages/
+│   └── shared/            # Shared types and utilities
+└── specs/                 # Project specifications
+    └── 001-invoicebot-mvp-spec/
+        ├── spec.md        # Technical specification
+        ├── plan.md        # Implementation plan
+        ├── data-model.md  # Database schema
+        └── contracts/     # API contracts
+```
+
+## Development Commands
+
+```bash
+# Development
+pnpm dev                 # Start all services
+pnpm build              # Build all packages
+pnpm lint               # Lint all code
+pnpm type-check         # TypeScript checking
+
+# Testing
+pnpm test               # Run all tests
+pnpm test:watch         # Watch mode
+pnpm test:coverage      # Coverage report
+
+# Deployment
+pnpm deploy:staging     # Deploy to staging
+pnpm deploy:prod        # Deploy to production
+```
+
+## Coding Standards
+
+**TypeScript**: Follow strict TypeScript conventions with proper type definitions
+**React**: Use functional components with hooks, Server Components where possible
+**Next.js**: Follow App Router patterns and Server/Client Component separation
+**Firebase**: Use Firebase v9+ modular SDK, proper error handling
+**Testing**: Jest + React Testing Library + Playwright for comprehensive testing
+
+## Key Features
+
+1. **WhatsApp Invoice Generation**: Natural language commands via WhatsApp
+2. **PDF Invoice Creation**: Professional PDFs with customizable templates
+3. **Web Dashboard Management**: Client and template management
+4. **User Authentication**: Multi-provider secure authentication
+5. **Recurring Invoice Scheduling**: Automated recurring billing
+6. **Multi-Channel Delivery**: WhatsApp and email delivery
+
+## Architecture Patterns
+
+- **Feature Sliced Design (FSD)**: Modular frontend architecture
+- **Serverless**: Firebase Cloud Functions for backend
+- **Event-Driven**: Firebase Pub/Sub for service decoupling
+- **Real-time**: Firestore for live data updates
+- **Security**: Firebase Auth + Firestore security rules
+
+## Recent Changes
+
+- 001-invoicebot-mvp-spec: Added Next.js 15+ + Firebase
+- 001-invoicebot-mvp-spec: Added TypeScript + React
+- 001-invoicebot-mvp-spec: Added Firebase Firestore
+
+## Development Guidelines
+
+1. **Constitution Compliance**: Follow InvoiceBot MVP Project Constitution principles
+2. **User-Centric Design**: Prioritize user experience and simplicity
+3. **Scalable Architecture**: Use serverless technologies and FSD patterns
+4. **Security First**: Implement proper authentication and data protection
+5. **MVP Focus**: Stay within defined MVP scope
+6. **Quality Assurance**: Maintain proper testing and coding standards
+
+## File Organization
+
+- Use Feature Sliced Design for frontend components
+- Group related functionality in feature folders
+- Keep shared utilities in the shared layer
+- Maintain clear separation between client and server components
+- Use TypeScript interfaces for all data models
+
+## Testing Strategy
+
+- **Unit Tests**: Jest + React Testing Library for components
+- **Integration Tests**: Firebase emulator testing
+- **E2E Tests**: Playwright for complete workflows
+- **Coverage Target**: 80% minimum
+
+## Deployment
+
+- **Frontend**: Vercel for Next.js deployment
+- **Backend**: Firebase Cloud Functions
+- **Database**: Firebase Firestore
+- **Storage**: Firebase Storage
+- **Monitoring**: Firebase Performance Monitoring + Crashlytics
