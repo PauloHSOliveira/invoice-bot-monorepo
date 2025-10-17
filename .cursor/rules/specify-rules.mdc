@@ -96,7 +96,6 @@ pnpm deploy:prod        # Deploy to production
 
 - 001-invoicebot-mvp-spec: Added Next.js 15+ + Firebase
 - 001-invoicebot-mvp-spec: Added TypeScript + React
-- 001-invoicebot-mvp-spec: Added Firebase Firestore
 
 ## Development Guidelines
 

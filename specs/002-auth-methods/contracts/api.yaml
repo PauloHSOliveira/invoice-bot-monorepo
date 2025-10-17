@@ -1,0 +1,599 @@
+openapi: 3.0.3
+info:
+  title: InvoiceBot MVP - Authentication Methods API
+  description: API specification for Authentication Methods feature
+  version: 1.0.0
+  contact:
+    name: InvoiceBot Team
+    email: support@invoicebot.com
+
+servers:
+  - url: https://api.invoicebot.com/v1
+    description: Production server
+  - url: https://staging-api.invoicebot.com/v1
+    description: Staging server
+
+paths:
+  /auth/signup:
+    post:
+      summary: Create new user account
+      description: Register a new user with email and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+            example:
+              email: "user@example.com"
+              password: "SecurePassword123"
+              confirmPassword: "SecurePassword123"
+              displayName: "John Doe"
+              acceptTerms: true
+      responses:
+        '201':
+          description: User account created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflict - email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/signin:
+    post:
+      summary: Sign in existing user
+      description: Authenticate user with email and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+            example:
+              email: "user@example.com"
+              password: "SecurePassword123"
+      responses:
+        '200':
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Unauthorized - invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/reset-password:
+    post:
+      summary: Send password reset email
+      description: Send password reset email to user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetRequest'
+            example:
+              email: "user@example.com"
+      responses:
+        '200':
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/verify-phone:
+    post:
+      summary: Verify phone number
+      description: Send SMS verification code to phone number
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneVerificationRequest'
+            example:
+              phoneNumber: "+1234567890"
+      responses:
+        '200':
+          description: SMS verification code sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneVerificationResponse'
+        '400':
+          description: Bad request - invalid phone number
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/confirm-phone:
+    post:
+      summary: Confirm phone verification
+      description: Verify phone number with SMS code
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneConfirmationRequest'
+            example:
+              verificationId: "verification_123"
+              code: "123456"
+      responses:
+        '200':
+          description: Phone number verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad request - invalid verification code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/profile:
+    get:
+      summary: Get user profile
+      description: Retrieve current user's profile information
+      tags:
+        - Profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update user profile
+      description: Update current user's profile information
+      tags:
+        - Profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+            example:
+              displayName: "John Smith"
+              phoneNumber: "+1234567890"
+              photoURL: "https://example.com/photo.jpg"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/sessions:
+    get:
+      summary: Get active sessions
+      description: Retrieve user's active authentication sessions
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Active sessions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthenticationSession'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Revoke all sessions
+      description: Revoke all active authentication sessions
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: All sessions revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/sessions/{sessionId}:
+    delete:
+      summary: Revoke specific session
+      description: Revoke a specific authentication session
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Session ID to revoke
+      responses:
+        '200':
+          description: Session revoked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      summary: Sign out user
+      description: Sign out current user and invalidate session
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User signed out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized - invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SignUpRequest:
+      type: object
+      required:
+        - email
+        - password
+        - confirmPassword
+        - acceptTerms
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          minLength: 8
+          description: User's password
+        confirmPassword:
+          type: string
+          description: Password confirmation
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: User's display name
+        acceptTerms:
+          type: boolean
+          description: Terms acceptance
+
+    SignInRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          description: User's password
+
+    PasswordResetRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+
+    PhoneVerificationRequest:
+      type: object
+      required:
+        - phoneNumber
+      properties:
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+          description: Phone number in E.164 format
+
+    PhoneVerificationResponse:
+      type: object
+      required:
+        - verificationId
+      properties:
+        verificationId:
+          type: string
+          description: Verification ID for confirmation
+
+    PhoneConfirmationRequest:
+      type: object
+      required:
+        - verificationId
+        - code
+      properties:
+        verificationId:
+          type: string
+          description: Verification ID from phone verification
+        code:
+          type: string
+          pattern: '^\d{6}$'
+          description: 6-digit SMS verification code
+
+    ProfileUpdateRequest:
+      type: object
+      properties:
+        displayName:
+          type: string
+          minLength: 2
+          maxLength: 100
+          description: User's display name
+        phoneNumber:
+          type: string
+          pattern: '^\+?[1-9]\d{1,14}$'
+          description: Phone number in E.164 format
+        photoURL:
+          type: string
+          format: uri
+          description: URL to user's profile photo
+
+    AuthResponse:
+      type: object
+      required:
+        - user
+        - token
+        - expiresAt
+      properties:
+        user:
+          $ref: '#/components/schemas/UserProfile'
+        token:
+          type: string
+          description: JWT authentication token
+        expiresAt:
+          type: integer
+          format: int64
+          description: Token expiration timestamp
+        refreshToken:
+          type: string
+          description: Refresh token for session renewal
+
+    UserProfile:
+      type: object
+      required:
+        - uid
+        - email
+        - displayName
+        - emailVerified
+        - phoneVerified
+        - createdAt
+        - updatedAt
+        - authProviders
+        - isActive
+      properties:
+        uid:
+          type: string
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User's email address
+        displayName:
+          type: string
+          description: User's display name
+        photoURL:
+          type: string
+          format: uri
+          description: URL to user's profile photo
+        phoneNumber:
+          type: string
+          description: User's phone number
+        emailVerified:
+          type: boolean
+          description: Whether email is verified
+        phoneVerified:
+          type: boolean
+          description: Whether phone number is verified
+        createdAt:
+          type: integer
+          format: int64
+          description: Account creation timestamp
+        updatedAt:
+          type: integer
+          format: int64
+          description: Last profile update timestamp
+        authProviders:
+          type: array
+          items:
+            type: string
+          description: Array of linked authentication providers
+        preferences:
+          type: object
+          description: User preferences and settings
+        lastLoginAt:
+          type: integer
+          format: int64
+          description: Last login timestamp
+        isActive:
+          type: boolean
+          description: Whether account is active
+
+    AuthenticationSession:
+      type: object
+      required:
+        - sessionId
+        - userId
+        - provider
+        - createdAt
+        - expiresAt
+        - lastActivityAt
+        - isActive
+      properties:
+        sessionId:
+          type: string
+          description: Unique session identifier
+        userId:
+          type: string
+          description: User ID
+        provider:
+          type: string
+          description: Authentication provider used
+        createdAt:
+          type: integer
+          format: int64
+          description: Session creation timestamp
+        expiresAt:
+          type: integer
+          format: int64
+          description: Session expiration timestamp
+        lastActivityAt:
+          type: integer
+          format: int64
+          description: Last activity timestamp
+        ipAddress:
+          type: string
+          description: Client IP address
+        userAgent:
+          type: string
+          description: Client user agent
+        isActive:
+          type: boolean
+          description: Whether session is active
+
+    MessageResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Response message
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        details:
+          type: object
+          description: Additional error details
+
+tags:
+  - name: Authentication
+    description: User authentication operations
+  - name: Profile
+    description: User profile management
+  - name: Sessions
+    description: Authentication session management
