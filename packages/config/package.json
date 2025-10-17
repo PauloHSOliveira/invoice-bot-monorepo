@@ -1,0 +1,24 @@
+{
+  "name": "@invoicebot/config",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared configuration for TypeScript and Biome across InvoiceBot monorepo",
+  "main": "index.js",
+  "files": [
+    "tsconfig",
+    "biome",
+    "eslint"
+  ],
+  "scripts": {
+    "build": "echo 'Config package - no build needed'",
+    "type-check": "echo 'Config package - no type check needed'"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.9.3"
+  }
+}

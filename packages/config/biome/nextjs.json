@@ -1,0 +1,13 @@
+{
+  "extends": "./base.json",
+  "linter": {
+    "rules": {
+      "style": {
+        "useImportType": "error"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "error"
+      }
+    }
+  }
+}
